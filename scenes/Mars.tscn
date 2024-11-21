@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://cw3q7t8coffv6"]
+
+[ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
+[ext_resource type="Texture2D" uid="uid://crvqqv420djoj" path="res://tilemaps/TestTilemap.png" id="2_vup8l"]
+[ext_resource type="Script" path="res://scripts/CameraMovement.gd" id="3_7qwd1"]
+[ext_resource type="PackedScene" uid="uid://btb31cmejqtte" path="res://scenes/Tile.tscn" id="3_cwfvk"]
+[ext_resource type="Script" path="res://scripts/LeverManager.gd" id="3_qrwog"]
+
+[node name="Mars" type="Node3D"]
+script = ExtResource("3_qrwog")
+tilemap = ExtResource("2_vup8l")
+tileScene = ExtResource("3_cwfvk")
+tileWidth = 1.0
+tileHeight = 0.5
+
+[node name="CameraPivot" type="Marker3D" parent="." node_paths=PackedStringArray("player")]
+transform = Transform3D(0.707107, -0.408607, 0.577096, 0, 0.816138, 0.577858, -0.707107, -0.408607, 0.577096, 0, 0, 0)
+script = ExtResource("3_7qwd1")
+player = NodePath("../Player")
+yOffset = 1.0
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+projection = 1
+current = true
+size = 10.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.182236, 0.983255, 0, -0.983255, 0.182236, 0, 4.28162, 5.04517)
+shadow_enabled = true
+
+[node name="Player" parent="." instance=ExtResource("1_b6evm")]

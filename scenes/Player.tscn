@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://b33bhrgedy24a"]
+
+[ext_resource type="PackedScene" uid="uid://pd17wquqpy0o" path="res://models/player/KakaPrime.glb" id="1_3dju3"]
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_76o0y"]
+
+[node name="Player" type="Node3D"]
+script = ExtResource("1_76o0y")
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="KakaPrime" parent="Pivot" instance=ExtResource("1_3dju3")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0)
