@@ -1,23 +1,26 @@
-[gd_scene load_steps=6 format=3 uid="uid://cw3q7t8coffv6"]
+[gd_scene load_steps=7 format=3 uid="uid://cw3q7t8coffv6"]
 
 [ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
-[ext_resource type="Texture2D" uid="uid://crvqqv420djoj" path="res://tilemaps/TestTilemap.png" id="2_vup8l"]
+[ext_resource type="Texture2D" uid="uid://dajs6ym4guo4" path="res://tilemaps/TestTilemap.png" id="2_vup8l"]
 [ext_resource type="Script" path="res://scripts/CameraMovement.gd" id="3_7qwd1"]
 [ext_resource type="PackedScene" uid="uid://btb31cmejqtte" path="res://scenes/Tile.tscn" id="3_cwfvk"]
 [ext_resource type="Script" path="res://scripts/LeverManager.gd" id="3_qrwog"]
+[ext_resource type="PackedScene" uid="uid://bcfsubgeesbua" path="res://scenes/Enemy.tscn" id="4_wc2qw"]
 
 [node name="Mars" type="Node3D"]
 script = ExtResource("3_qrwog")
-tilemap = ExtResource("2_vup8l")
+mapImage = ExtResource("2_vup8l")
 tileScene = ExtResource("3_cwfvk")
 tileWidth = 1.0
 tileHeight = 0.5
+enemy = ExtResource("4_wc2qw")
 
 [node name="CameraPivot" type="Marker3D" parent="." node_paths=PackedStringArray("player")]
 transform = Transform3D(0.707107, -0.408607, 0.577096, 0, 0.816138, 0.577858, -0.707107, -0.408607, 0.577096, 0, 0, 0)
 script = ExtResource("3_7qwd1")
 player = NodePath("../Player")
 yOffset = 1.0
+lerp = 0.05
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
