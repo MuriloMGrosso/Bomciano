@@ -4,11 +4,21 @@ extends Node3D
 @export var tileScene: PackedScene
 @export var tileWidth: float
 @export var tileHeight: float
+@export var friend: PackedScene
 @export var enemy: PackedScene
+@export var fruit: PackedScene
+@export var spawn: PackedScene
 
 var mapArray = []
 var mapWidth = 0
 var mapHeight = 0
+
+var enemies = []
+var friends = []
+var fruits = []
+
+var life = 3
+var score = 0
 
 const EMPTY_TILE_COLOR = Color.BLACK
 const DEFAULT_TILE_COLOR = Color.WHITE
@@ -78,15 +88,27 @@ func _create_terrain() -> void:
 				PLAYER_SPAWN: # Spawn do player
 					$Player.position = pos
 					$Player.set_index(index)
+					var obj = spawn.instantiate()
+					obj.position = pos
+					add_child(obj)
 				FRIEND_SPAWN: # Spawn do Bomciano
-					pass
+					var obj = friend.instantiate()
+					obj.position = pos
+					obj.set_index(index)
+					friends.append(obj)
+					add_child(obj)
 				ENEMY_SPAWN: # Spawn do Mauciano
-					var mob = enemy.instantiate()
-					mob.position = pos
-					mob.set_index(index)
-					add_child(mob)
+					var obj = enemy.instantiate()
+					obj.position = pos
+					obj.set_index(index)
+					enemies.append(obj)
+					add_child(obj)
 				FRUIT_SPAWN: # Spawn da fruta
-					pass
+					var obj = fruit.instantiate()
+					obj.position = pos
+					obj.set_index(index)
+					fruits.append(obj)
+					add_child(obj)
 
 # Funções para verificar a validade do movimento em cada direção
 func canMoveUp(index: int) -> bool:
@@ -105,3 +127,27 @@ func canMoveLeft(index: int) -> bool:
 	var w = fmod(index, mapWidth) - 1
 	var h = index / mapWidth
 	return w > -1 && mapArray[w][h] > -1
+
+# Interações do jogador com os elementos
+func playerTileAction(index: int) -> void:
+	for e in enemies:
+		if e.index == index:
+			e.queue_free()
+			enemies.erase(e)
+			life -= 1
+			#Reinicia a cena se a vida for 0
+			if life < 1:
+				get_tree().reload_current_scene()
+	
+	for f in fruits:
+		if f.index == index:
+			f.queue_free()
+			fruits.erase(f)
+			if life < 3:
+				life += 1
+	
+	for f in friends:
+		if f.index == index:
+			f.queue_free()
+			friends.erase(f)
+			score += 1

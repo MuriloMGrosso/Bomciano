@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://dt5umfpwtev7w"]
+
+[ext_resource type="PackedScene" uid="uid://dnqqr2og3o27r" path="res://models/bomciano/BomCiano.glb" id="1_jhfny"]
+[ext_resource type="Script" path="res://scripts/Friend.gd" id="2_5s74a"]
+
+[node name="Friend" type="Node3D"]
+script = ExtResource("2_5s74a")
+
+[node name="BomCiano" parent="." instance=ExtResource("1_jhfny")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)

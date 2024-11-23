@@ -1,11 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://cw3q7t8coffv6"]
+[gd_scene load_steps=12 format=3 uid="uid://cw3q7t8coffv6"]
 
 [ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
 [ext_resource type="Texture2D" uid="uid://dajs6ym4guo4" path="res://tilemaps/TestTilemap.png" id="2_vup8l"]
 [ext_resource type="Script" path="res://scripts/CameraMovement.gd" id="3_7qwd1"]
 [ext_resource type="PackedScene" uid="uid://btb31cmejqtte" path="res://scenes/Tile.tscn" id="3_cwfvk"]
 [ext_resource type="Script" path="res://scripts/LeverManager.gd" id="3_qrwog"]
+[ext_resource type="PackedScene" uid="uid://dt5umfpwtev7w" path="res://scenes/Friend.tscn" id="4_emv6s"]
 [ext_resource type="PackedScene" uid="uid://bcfsubgeesbua" path="res://scenes/Enemy.tscn" id="4_wc2qw"]
+[ext_resource type="PackedScene" uid="uid://cdimjvdj1ku61" path="res://scenes/Fruit.tscn" id="5_3u88k"]
+[ext_resource type="PackedScene" uid="uid://chxj0ghdivs4g" path="res://scenes/Spawn.tscn" id="7_ukd3o"]
+[ext_resource type="AudioStream" uid="uid://ti1xgtl7axnx" path="res://sfxs/Mars.wav" id="10_trtss"]
+[ext_resource type="Script" path="res://scripts/ScoreDisplay.gd" id="11_fprpl"]
 
 [node name="Mars" type="Node3D"]
 script = ExtResource("3_qrwog")
@@ -13,7 +18,10 @@ mapImage = ExtResource("2_vup8l")
 tileScene = ExtResource("3_cwfvk")
 tileWidth = 1.0
 tileHeight = 0.5
+friend = ExtResource("4_emv6s")
 enemy = ExtResource("4_wc2qw")
+fruit = ExtResource("5_3u88k")
+spawn = ExtResource("7_ukd3o")
 
 [node name="CameraPivot" type="Marker3D" parent="." node_paths=PackedStringArray("player")]
 transform = Transform3D(0.707107, -0.408607, 0.577096, 0, 0.816138, 0.577858, -0.707107, -0.408607, 0.577096, 0, 0, 0)
@@ -29,7 +37,16 @@ current = true
 size = 10.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.182236, 0.983255, 0, -0.983255, 0.182236, 0, 4.28162, 5.04517)
+transform = Transform3D(0.99863, -0.0506689, 0.0131039, 0, 0.25038, 0.968148, -0.052336, -0.966821, 0.250037, 0, 4.28162, 5.04517)
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_b6evm")]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("10_trtss")
+autoplay = true
+
+[node name="ScoreDisplay" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("11_fprpl")

@@ -5,6 +5,7 @@ var index = 0
 # Chamada em cada frame
 func _process(delta: float) -> void:
 	_movement()
+	get_parent().playerTileAction(index)
 
 # Movimentação do jogador
 func _movement() -> void:
