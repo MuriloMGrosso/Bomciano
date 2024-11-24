@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://dt5umfpwtev7w"]
 
-[ext_resource type="PackedScene" uid="uid://dnqqr2og3o27r" path="res://models/bomciano/BomCiano.glb" id="1_jhfny"]
 [ext_resource type="Script" path="res://scripts/Friend.gd" id="2_5s74a"]
+[ext_resource type="PackedScene" uid="uid://c835y3aktmud5" path="res://models/bomciano/O verdadeiro BomCiano.glb" id="2_pqqt7"]
 
 [node name="Friend" type="Node3D"]
 script = ExtResource("2_5s74a")
 
-[node name="BomCiano" parent="." instance=ExtResource("1_jhfny")]
+[node name="O verdadeiro BomCiano" parent="." instance=ExtResource("2_pqqt7")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)

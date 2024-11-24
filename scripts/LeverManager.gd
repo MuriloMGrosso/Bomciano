@@ -1,5 +1,6 @@
 extends Node3D
 
+@export var pelinNoise: FastNoiseLite
 @export var mapImage: CompressedTexture2D
 @export var tileScene: PackedScene
 @export var tileWidth: float
@@ -9,7 +10,8 @@ extends Node3D
 @export var fruit: PackedScene
 @export var spawn: PackedScene
 
-var mapArray = []
+var tileMap = []
+var heightMap = []
 var mapWidth = 0
 var mapHeight = 0
 
@@ -34,55 +36,99 @@ const FRIEND_SPAWN = 2
 const ENEMY_SPAWN = 3
 const FRUIT_SPAWN = 4
 
+var enemyRate = 10
+var friendRate = 2
+var fruitRate = 5
+var emptyRate = 100
+
 # Primeira chamada
 func _ready() -> void:
 	_load_tilemap_from_image(mapImage.get_image())
+	#_load_random_tilemap()
 	_create_terrain()
 
 # Transforma cada pixel da imagem em valores inteiros representando cada tile
 func _load_tilemap_from_image(image: Image) -> void:
+	var rng = RandomNumberGenerator.new()
+	
 	# Tamanho do mapa
 	mapWidth = image.get_width()
 	mapHeight = image.get_height()
 	
 	# Para cada pixel na imagem
 	for w in mapWidth:
-		mapArray.append([])
+		tileMap.append([])
+		heightMap.append([])
 		for h in mapHeight:
+			heightMap[w].append((h + w) / 2)
 			match image.get_pixel( w, mapHeight - h):
 				DEFAULT_TILE_COLOR: # Tile padrão
-					mapArray[w].append(DEFAULT_TILE)
+					tileMap[w].append(DEFAULT_TILE)
 				PLAYER_SPAWN_COLOR: # Tile de spawn do jogador
-					mapArray[w].append(PLAYER_SPAWN)
+					tileMap[w].append(PLAYER_SPAWN)
 				FRIEND_SPAWN_COLOR: # Tile de spawn do Bomciano
-					mapArray[w].append(FRIEND_SPAWN)
+					tileMap[w].append(FRIEND_SPAWN)
 				ENEMY_SPAWN_COLOR: # Tile de spawn do Mauciano
-					mapArray[w].append(ENEMY_SPAWN)
+					tileMap[w].append(ENEMY_SPAWN)
 				FRUIT_SPAWN_COLOR: # Tile de spawn da fruta
-					mapArray[w].append(FRUIT_SPAWN)
+					tileMap[w].append(FRUIT_SPAWN)
 				_: # Caso contrário, tile vazio
-					mapArray[w].append(EMPTY_TILE)
+					tileMap[w].append(EMPTY_TILE)
+					
+# Cria um mapa aleatório
+func _load_random_tilemap() -> void:
+	var rng = RandomNumberGenerator.new()
+	
+	# Tamanho do mapa
+	mapWidth = 10
+	mapHeight = 100
+	for w in mapWidth:
+		tileMap.append([])
+		heightMap.append([])
+		for h in mapHeight:
+			var tileType = rng.randi_range(0, enemyRate + friendRate + fruitRate + emptyRate)
+			var noise = int((pelinNoise.get_noise_2d(w, h) + 1) / 2 * 10) + 1
+			heightMap[w].append(noise)
+			
+			if tileType < enemyRate:	
+				tileMap[w].append(ENEMY_SPAWN)
+				continue
+			tileType -= enemyRate
+			
+			if tileType < friendRate:	
+				tileMap[w].append(FRIEND_SPAWN)
+				continue
+			tileType -= friendRate
+			
+			if tileType < fruitRate:	
+				tileMap[w].append(FRUIT_SPAWN)
+				continue
+			tileType -= fruitRate
+			
+			tileMap[w].append(DEFAULT_TILE)
+			
+	tileMap[0][0] = PLAYER_SPAWN
 
 # Cria os objetos do terreno
 func _create_terrain() -> void:
 	# Para cada elemento da array
 	for w in mapWidth:
-		mapArray.append([])
+		tileMap.append([])
 		for h in mapHeight:
 			# Se é espaço vazio, vai para próxima iteração
-			if mapArray[w][h] < 0:
+			if tileMap[w][h] < 0:
 				continue
 			
 			# Cria um tile na posição atual
 			var tile = tileScene.instantiate()
-			var pos = Vector3(-h * tileWidth, (w + h) * tileHeight, -w * tileWidth)
+			var pos = _getPositionFromCoords(w, h)
 			var index = w + h * mapWidth
-			tile.scale = Vector3(tileWidth, (w + h) * tileHeight, tileWidth)
+			tile.scale = Vector3(tileWidth, pos.y, tileWidth)
 			tile.position = pos
 			add_child(tile)
 			
 			# Adições específicas de cada tile
-			match mapArray[w][h]:
+			match tileMap[w][h]:
 				DEFAULT_TILE: # Tile padrão
 					pass
 				PLAYER_SPAWN: # Spawn do player
@@ -110,23 +156,31 @@ func _create_terrain() -> void:
 					fruits.append(obj)
 					add_child(obj)
 
+# Retorna a posição do indice ou coordenada desejados
+func _getPositionFromCoords(w: int, h: int) -> Vector3:
+	return Vector3(-h * tileWidth, heightMap[w][h], -w * tileWidth)
+func getPositionFromIndex(index: int) -> Vector3:
+	var w = fmod(index, mapWidth)
+	var h = index / mapWidth
+	return _getPositionFromCoords(w, h)
+
 # Funções para verificar a validade do movimento em cada direção
 func canMoveUp(index: int) -> bool:
 	var w = fmod(index, mapWidth)
 	var h = index / mapWidth + 1
-	return h < mapHeight && mapArray[w][h] > -1	
+	return h < mapHeight && tileMap[w][h] > -1 && heightMap[w][h] - getPositionFromIndex(index).y <= 1
 func canMoveDown(index: int) -> bool:
 	var w = fmod(index, mapWidth)
 	var h = index / mapWidth - 1
-	return h > -1 && mapArray[w][h] > -1
+	return h > -1 && tileMap[w][h] > -1 && heightMap[w][h] - getPositionFromIndex(index).y <= 1
 func canMoveRight(index: int) -> bool:
 	var w = fmod(index, mapWidth) + 1
 	var h = index / mapWidth
-	return w < mapWidth && mapArray[w][h] > -1
+	return w < mapWidth && tileMap[w][h] > -1 && heightMap[w][h] - getPositionFromIndex(index).y <= 1
 func canMoveLeft(index: int) -> bool:
 	var w = fmod(index, mapWidth) - 1
 	var h = index / mapWidth
-	return w > -1 && mapArray[w][h] > -1
+	return w > -1 && tileMap[w][h] > -1 && heightMap[w][h] - getPositionFromIndex(index).y <= 1
 
 # Interações do jogador com os elementos
 func playerTileAction(index: int) -> void:

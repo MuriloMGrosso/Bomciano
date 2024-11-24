@@ -34,8 +34,6 @@ func _move() -> void:
 	match currentDir:
 		UP_DIR:
 			if(get_parent().canMoveUp(index)):
-				position.x -= tileWidth
-				position.y += tileHeight
 				index += get_parent().mapWidth
 				look_at(position + Vector3.RIGHT, Vector3.UP)
 			else:
@@ -43,8 +41,6 @@ func _move() -> void:
 				moveTimer = -1	
 		DOWN_DIR:
 			if(get_parent().canMoveDown(index)):
-				position.x += tileWidth
-				position.y -= tileHeight
 				index -= get_parent().mapWidth
 				look_at(position + Vector3.LEFT, Vector3.UP)
 			else:
@@ -52,8 +48,6 @@ func _move() -> void:
 				moveTimer = -1
 		RIGHT_DIR:
 			if(get_parent().canMoveRight(index)):
-				position.z -= tileWidth
-				position.y += tileHeight
 				index += 1
 				look_at(position + Vector3.BACK, Vector3.UP)
 			else:
@@ -61,13 +55,13 @@ func _move() -> void:
 				moveTimer = -1
 		LEFT_DIR:
 			if(get_parent().canMoveLeft(index)):
-				position.z += tileWidth
-				position.y -= tileHeight
 				index -= 1
 				look_at(position + Vector3.FORWARD, Vector3.UP)
 			else:
 				currentDir = rng.randi_range(0, 3)
 				moveTimer = -1
+
+	position = get_parent().getPositionFromIndex(index)
 
 # Define o indice do inimigo no mapa
 func set_index(_index: int) -> void:

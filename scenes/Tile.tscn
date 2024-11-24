@@ -1,8 +1,8 @@
 [gd_scene load_steps=2 format=3 uid="uid://btb31cmejqtte"]
 
-[ext_resource type="PackedScene" uid="uid://cuj8iiqqyal5j" path="res://models/Cubo padrão - Marte.glb" id="1_jgaxa"]
+[ext_resource type="PackedScene" uid="uid://ciiccr78bm4mh" path="res://models/tile/Cubo Marciano.glb" id="1_pk3gb"]
 
 [node name="Block" type="Node3D"]
 
-[node name="Cubo padrão - Marte" parent="." instance=ExtResource("1_jgaxa")]
+[node name="Cubo Marciano" parent="." instance=ExtResource("1_pk3gb")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, -0.5, 0)

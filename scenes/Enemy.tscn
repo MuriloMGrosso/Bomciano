@@ -1,13 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://bcfsubgeesbua"]
 
-[ext_resource type="Texture2D" uid="uid://s6vvvqqlek5c" path="res://temp/GreenBlob0.png" id="1_xjrd1"]
 [ext_resource type="Script" path="res://scripts/Enemy.gd" id="1_xne4k"]
+[ext_resource type="PackedScene" uid="uid://clyiw30vwdj3m" path="res://models/mauciano/Maociano.glb" id="2_1r8ft"]
 
 [node name="Enemy" type="Node3D"]
 script = ExtResource("1_xne4k")
 
-[node name="Pivot" type="Node3D" parent="."]
-
-[node name="Sprite3D" type="Sprite3D" parent="Pivot"]
-transform = Transform3D(1, 0, 0, 0, 3.48, 0, 0, 0, 1, 0, 0.845203, 0)
-texture = ExtResource("1_xjrd1")
+[node name="Maociano" parent="." instance=ExtResource("2_1r8ft")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
