@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cw3q7t8coffv6"]
+[gd_scene load_steps=21 format=3 uid="uid://cw3q7t8coffv6"]
 
 [ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
 [ext_resource type="Texture2D" uid="uid://dajs6ym4guo4" path="res://tilemaps/TestTilemap.png" id="2_vup8l"]
@@ -40,6 +40,17 @@ volumetric_fog_length = 66.8
 volumetric_fog_detail_spread = 0.615572
 volumetric_fog_ambient_inject = 5.42
 volumetric_fog_sky_affect = 0.203
+adjustment_enabled = true
+adjustment_saturation = 1.2
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_krfgg"]
+exposure_multiplier = 1.2
+auto_exposure_scale = 1.2
+auto_exposure_speed = 20.58
+dof_blur_far_enabled = true
+dof_blur_far_distance = 108.0
+dof_blur_near_distance = 50.0
+dof_blur_amount = 0.05
 
 [node name="Mars" type="Node3D"]
 script = ExtResource("3_qrwog")
@@ -76,39 +87,44 @@ texture = ExtResource("9_fpmib")
 
 [node name="Layer1" type="Sprite3D" parent="CameraPivot/Background"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, -2.38419e-07, 1, 0, 0, -9)
-modulate = Color(1, 0.423529, 0.0627451, 0.709804)
+modulate = Color(1, 0.423529, 0.0627451, 0.25098)
 texture = ExtResource("10_gxwkh")
 
 [node name="Layer2" type="Sprite3D" parent="CameraPivot/Background"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, -5.06639e-07, 1, 0, 0, -8)
-modulate = Color(0.964706, 0.396078, 0, 0.756863)
+modulate = Color(1, 0.435294, 0.117647, 0.623529)
 texture = ExtResource("11_0jquu")
 
 [node name="Layer3" type="Sprite3D" parent="CameraPivot/Background"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, -1.04308e-06, 1, 0, 0, -7)
-modulate = Color(1, 0.534191, 0.316838, 1)
+modulate = Color(1, 0.533333, 0.317647, 1)
 texture = ExtResource("12_7cvky")
 
 [node name="Layer4" type="Sprite3D" parent="CameraPivot/Background"]
 transform = Transform3D(0.999997, 0, 0, 0, 0.999999, 0, 0, -2.11596e-06, 1, 0, 0, -6)
-modulate = Color(1, 0.656304, 0.504981, 1)
+modulate = Color(1, 0.597054, 0.354859, 1)
 texture = ExtResource("13_3am7l")
 
-[node name="Light0" type="Sprite3D" parent="CameraPivot"]
-transform = Transform3D(0.53033, 15.4068, 0, -0.53033, 15.4068, 0, 0, 0, 5, -4.1274, -4.1274, 10)
+[node name="Foreground" type="Node3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 90)
+
+[node name="Light0" type="Sprite3D" parent="CameraPivot/Foreground"]
+transform = Transform3D(0.53033, 15.4068, 0, -0.53033, 15.4068, 2.38419e-07, -7.45058e-09, -9.53674e-07, 5, -4.1274, -4.1274, 0)
 modulate = Color(1, 1, 1, 0.129412)
 texture = ExtResource("14_2r7tt")
 
-[node name="Light1" type="Sprite3D" parent="CameraPivot"]
-transform = Transform3D(0.229463, 15.4068, 0, -0.229463, 15.4068, 2.38419e-07, 2.23517e-08, -9.53674e-07, 5, -0.0801114, -5.59718, 10.2701)
+[node name="Light1" type="Sprite3D" parent="CameraPivot/Foreground"]
+transform = Transform3D(0.229463, 15.4068, 0, -0.229463, 15.4068, 2.38419e-07, 2.6077e-08, -9.53674e-07, 5, -0.0801115, -5.59718, 0)
 modulate = Color(1, 1, 1, 0.129412)
 texture = ExtResource("14_2r7tt")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.656059, 0.75471, 0, -0.75471, 0.656059, 0, 4.28162, 5.04517)
+light_color = Color(0.992157, 1, 0.686275, 1)
+light_energy = 1.5
 shadow_enabled = true
 shadow_bias = 0.0
-shadow_normal_bias = 4.162
+shadow_normal_bias = 10.0
 
 [node name="Player" parent="." instance=ExtResource("1_b6evm")]
 
@@ -123,3 +139,6 @@ script = ExtResource("11_fprpl")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8hhkf")
+camera_attributes = SubResource("CameraAttributesPractical_krfgg")
+
+[node name="Block" parent="." instance=ExtResource("3_cwfvk")]

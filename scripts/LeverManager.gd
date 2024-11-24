@@ -60,7 +60,7 @@ func _load_tilemap_from_image(image: Image) -> void:
 		tileMap.append([])
 		heightMap.append([])
 		for h in mapHeight:
-			heightMap[w].append((h + w) / 2)
+			heightMap[w].append((h + w) / 2 + 10)
 			match image.get_pixel( w, mapHeight - h):
 				DEFAULT_TILE_COLOR: # Tile padrão
 					tileMap[w].append(DEFAULT_TILE)
