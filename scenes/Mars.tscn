@@ -140,5 +140,3 @@ script = ExtResource("11_fprpl")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8hhkf")
 camera_attributes = SubResource("CameraAttributesPractical_krfgg")
-
-[node name="Block" parent="." instance=ExtResource("3_cwfvk")]

@@ -41,10 +41,14 @@ var friendRate = 2
 var fruitRate = 5
 var emptyRate = 100
 
+var rng
+
 # Primeira chamada
 func _ready() -> void:
-	_load_tilemap_from_image(mapImage.get_image())
-	#_load_random_tilemap()
+	rng = RandomNumberGenerator.new()
+	
+	#_load_tilemap_from_image(mapImage.get_image())
+	_load_random_tilemap()
 	_create_terrain()
 
 # Transforma cada pixel da imagem em valores inteiros representando cada tile
@@ -77,8 +81,6 @@ func _load_tilemap_from_image(image: Image) -> void:
 					
 # Cria um mapa aleatório
 func _load_random_tilemap() -> void:
-	var rng = RandomNumberGenerator.new()
-	
 	# Tamanho do mapa
 	mapWidth = 10
 	mapHeight = 100
@@ -86,28 +88,43 @@ func _load_random_tilemap() -> void:
 		tileMap.append([])
 		heightMap.append([])
 		for h in mapHeight:
-			var tileType = rng.randi_range(0, enemyRate + friendRate + fruitRate + emptyRate)
-			var noise = int((pelinNoise.get_noise_2d(w, h) + 1) / 2 * 10) + 1
-			heightMap[w].append(noise)
-			
-			if tileType < enemyRate:	
-				tileMap[w].append(ENEMY_SPAWN)
-				continue
-			tileType -= enemyRate
-			
-			if tileType < friendRate:	
-				tileMap[w].append(FRIEND_SPAWN)
-				continue
-			tileType -= friendRate
-			
-			if tileType < fruitRate:	
-				tileMap[w].append(FRUIT_SPAWN)
-				continue
-			tileType -= fruitRate
-			
-			tileMap[w].append(DEFAULT_TILE)
-			
+			heightMap[w].append((h + w) / 2 + 10)
+			tileMap[w].append(EMPTY_TILE)
+	
+	_random_walk(0,0, 100)	
+	_random_walk(0,0, 100)	
+	_random_walk(0,0, 100)	
 	tileMap[0][0] = PLAYER_SPAWN
+	
+func _random_walk(w : int, h : int, left : int) -> void:	
+	var dir = rng.randi_range(1, 100)
+	var type = rng.randi_range(1, 100)
+
+	if type < 2:
+		tileMap[w][h] = FRIEND_SPAWN
+	elif type < 7:
+		tileMap[w][h] = FRUIT_SPAWN
+	elif type < 17:
+		tileMap[w][h] = ENEMY_SPAWN
+	else:		
+		tileMap[w][h] = DEFAULT_TILE
+	
+	if dir < 10:
+		h -= 1
+	elif dir < 40:
+		w += 1
+	elif dir < 70:
+		w -= 1
+	else:
+		h += 1
+	
+	w = clamp(w, 0, mapWidth - 1)
+	h = clamp(h, 0, mapHeight - 1)
+	
+	if tileMap[w][h] < 0:
+		left -= 1
+	if left > 0:
+		_random_walk(w, h, left)
 
 # Cria os objetos do terreno
 func _create_terrain() -> void:
