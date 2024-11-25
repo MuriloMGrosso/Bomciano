@@ -1,7 +1,5 @@
 extends Node3D
 
-@export var pelinNoise: FastNoiseLite
-@export var mapImage: CompressedTexture2D
 @export var tileScene: PackedScene
 @export var tileWidth: float
 @export var tileHeight: float
@@ -18,16 +16,11 @@ var mapHeight = 0
 var enemies = []
 var friends = []
 var fruits = []
+var tiles = {}
 
 var life = 3
 var score = 0
-
-const EMPTY_TILE_COLOR = Color.BLACK
-const DEFAULT_TILE_COLOR = Color.WHITE
-const PLAYER_SPAWN_COLOR = Color.GREEN
-const FRIEND_SPAWN_COLOR = Color.BLUE
-const ENEMY_SPAWN_COLOR = Color.RED
-const FRUIT_SPAWN_COLOR = Color.YELLOW
+var maxPlayerHeight = 0
 
 const EMPTY_TILE = -1
 const DEFAULT_TILE = 0
@@ -36,10 +29,16 @@ const FRIEND_SPAWN = 2
 const ENEMY_SPAWN = 3
 const FRUIT_SPAWN = 4
 
+const MAX_TILE_WIDTH = 10
+const MAX_MAP_HEIGHT = 50
+
 var enemyRate = 10
 var friendRate = 2
 var fruitRate = 5
 var emptyRate = 100
+
+var lastH : int
+var lastW : int
 
 var rng
 
@@ -47,67 +46,43 @@ var rng
 func _ready() -> void:
 	rng = RandomNumberGenerator.new()
 	
-	#_load_tilemap_from_image(mapImage.get_image())
 	_load_random_tilemap()
-	_create_terrain()
 
-# Transforma cada pixel da imagem em valores inteiros representando cada tile
-func _load_tilemap_from_image(image: Image) -> void:
-	var rng = RandomNumberGenerator.new()
-	
-	# Tamanho do mapa
-	mapWidth = image.get_width()
-	mapHeight = image.get_height()
-	
-	# Para cada pixel na imagem
-	for w in mapWidth:
-		tileMap.append([])
-		heightMap.append([])
-		for h in mapHeight:
-			heightMap[w].append((h + w) / 2 + 10)
-			match image.get_pixel( w, mapHeight - h):
-				DEFAULT_TILE_COLOR: # Tile padrão
-					tileMap[w].append(DEFAULT_TILE)
-				PLAYER_SPAWN_COLOR: # Tile de spawn do jogador
-					tileMap[w].append(PLAYER_SPAWN)
-				FRIEND_SPAWN_COLOR: # Tile de spawn do Bomciano
-					tileMap[w].append(FRIEND_SPAWN)
-				ENEMY_SPAWN_COLOR: # Tile de spawn do Mauciano
-					tileMap[w].append(ENEMY_SPAWN)
-				FRUIT_SPAWN_COLOR: # Tile de spawn da fruta
-					tileMap[w].append(FRUIT_SPAWN)
-				_: # Caso contrário, tile vazio
-					tileMap[w].append(EMPTY_TILE)
-					
+func _getTileMap(w : int, h : int):
+	h -= max(maxPlayerHeight - MAX_MAP_HEIGHT, 0)
+	if w < 0 || h < 0:
+		return EMPTY_TILE
+	return tileMap[w][h]
+func _getHeightMap(w : int, h : int):
+	h -= max(maxPlayerHeight - MAX_MAP_HEIGHT, 0)
+	if w < 0 || h < 0:
+		return 0
+	return heightMap[w][h]
+func _setTileMap(w : int, h : int, value : int) -> void:
+	h -= max(maxPlayerHeight - MAX_MAP_HEIGHT, 0)
+	tileMap[w][h] = value
+func _setHeightMap(w : int, h : int, value : int) -> void:
+	h -= max(maxPlayerHeight - MAX_MAP_HEIGHT, 0)
+	heightMap[w][h] = value
+
 # Cria um mapa aleatório
 func _load_random_tilemap() -> void:
 	# Tamanho do mapa
-	mapWidth = 10
-	mapHeight = 100
+	mapWidth = MAX_TILE_WIDTH
 	for w in mapWidth:
 		tileMap.append([])
 		heightMap.append([])
-		for h in mapHeight:
-			heightMap[w].append((h + w) / 2 + 10)
-			tileMap[w].append(EMPTY_TILE)
 	
-	_random_walk(0,0, 100)	
-	_random_walk(0,0, 100)	
-	_random_walk(0,0, 100)	
-	tileMap[0][0] = PLAYER_SPAWN
+	for h in MAX_MAP_HEIGHT:
+		_createNextTerrainLine()
 	
-func _random_walk(w : int, h : int, left : int) -> void:	
+	_setTileMap(mapWidth/2, 0, PLAYER_SPAWN)
+	_create_tile_at(mapWidth/2, 0)
+	_random_walk(mapWidth/2, 0)
+	
+func _random_walk(w : int, h : int) -> void:	
 	var dir = rng.randi_range(1, 100)
 	var type = rng.randi_range(1, 100)
-
-	if type < 2:
-		tileMap[w][h] = FRIEND_SPAWN
-	elif type < 7:
-		tileMap[w][h] = FRUIT_SPAWN
-	elif type < 17:
-		tileMap[w][h] = ENEMY_SPAWN
-	else:		
-		tileMap[w][h] = DEFAULT_TILE
 	
 	if dir < 10:
 		h -= 1
@@ -117,65 +92,107 @@ func _random_walk(w : int, h : int, left : int) -> void:
 		w -= 1
 	else:
 		h += 1
-	
+		
 	w = clamp(w, 0, mapWidth - 1)
 	h = clamp(h, 0, mapHeight - 1)
-	
-	if tileMap[w][h] < 0:
-		left -= 1
-	if left > 0:
-		_random_walk(w, h, left)
 
-# Cria os objetos do terreno
-func _create_terrain() -> void:
-	# Para cada elemento da array
+	if type < 2:
+		_setTileMap(w,h,FRIEND_SPAWN)
+	elif type < 5:
+		_setTileMap(w,h,FRUIT_SPAWN)
+	elif type < 10:
+		_setTileMap(w,h,ENEMY_SPAWN)
+	else:		
+		_setTileMap(w,h,DEFAULT_TILE)
+	
+	_create_tile_at(w, h)
+	
+	lastH = h
+	lastW = w
+	
+	if h < mapHeight - 1:
+		_random_walk(w, h)
+func _createNextTerrainLine() -> void:
 	for w in mapWidth:
-		tileMap.append([])
-		for h in mapHeight:
-			# Se é espaço vazio, vai para próxima iteração
-			if tileMap[w][h] < 0:
-				continue
-			
-			# Cria um tile na posição atual
-			var tile = tileScene.instantiate()
-			var pos = _getPositionFromCoords(w, h)
-			var index = w + h * mapWidth
-			tile.scale = Vector3(tileWidth, pos.y, tileWidth)
-			tile.position = pos
-			add_child(tile)
-			
-			# Adições específicas de cada tile
-			match tileMap[w][h]:
-				DEFAULT_TILE: # Tile padrão
-					pass
-				PLAYER_SPAWN: # Spawn do player
-					$Player.position = pos
-					$Player.set_index(index)
-					var obj = spawn.instantiate()
-					obj.position = pos
-					add_child(obj)
-				FRIEND_SPAWN: # Spawn do Bomciano
-					var obj = friend.instantiate()
-					obj.position = pos
-					obj.set_index(index)
-					friends.append(obj)
-					add_child(obj)
-				ENEMY_SPAWN: # Spawn do Mauciano
-					var obj = enemy.instantiate()
-					obj.position = pos
-					obj.set_index(index)
-					enemies.append(obj)
-					add_child(obj)
-				FRUIT_SPAWN: # Spawn da fruta
-					var obj = fruit.instantiate()
-					obj.position = pos
-					obj.set_index(index)
-					fruits.append(obj)
-					add_child(obj)
+		tileMap[w].append(EMPTY_TILE)	
+		heightMap[w].append((mapHeight + w) / 2 + 10)
+	mapHeight += 1
+func _removeFirstTerrainLine() -> void:
+	for w in mapWidth:
+		tileMap[w].remove_at(0)
+		heightMap[w].remove_at(0)
+		
+		_remove_tile_at(w, maxPlayerHeight - MAX_MAP_HEIGHT)
+
+func _create_tile_at(w : int, h : int) -> void:
+	if _getTileMap(w, h) < 0:
+		return
+	
+	# Cria um tile na posição atual
+	var tile = tileScene.instantiate()
+	var pos = _getPositionFromCoords(w, h)
+	var index = w + h * mapWidth
+	tile.scale = Vector3(tileWidth, pos.y, tileWidth)
+	tile.position = pos
+	tile.name = 'Tile_' + str(index)
+	tiles[str(index)] = tile
+	add_child(tile)
+	
+	# Adições específicas de cada tile
+	match _getTileMap(w, h):
+		DEFAULT_TILE: # Tile padrão
+			pass
+		PLAYER_SPAWN: # Spawn do player
+			$Player.position = pos
+			$Player.set_index(index)
+			var obj = spawn.instantiate()
+			obj.position = pos
+			add_child(obj)
+		FRIEND_SPAWN: # Spawn do Bomciano
+			var obj = friend.instantiate()
+			obj.position = pos
+			obj.set_index(index)
+			friends.append(obj)
+			add_child(obj)
+		ENEMY_SPAWN: # Spawn do Mauciano
+			var obj = enemy.instantiate()
+			obj.position = pos
+			obj.set_index(index)
+			enemies.append(obj)
+			add_child(obj)
+		FRUIT_SPAWN: # Spawn da fruta
+			var obj = fruit.instantiate()
+			obj.position = pos
+			obj.set_index(index)
+			fruits.append(obj)
+			add_child(obj)
+func _remove_tile_at(w : int, h : int) -> void:
+	if _getTileMap(w, h) < 0:
+		return
+	
+	# Remove tile na posição atual
+	var index = w + h * mapWidth
+	#var tile = tiles[str(index)]
+	#tile.queue_free()
+	#tiles.erase(str(index))
+	
+	# Remove objetos do tile
+	for e in enemies:
+		if e.index == index:
+			e.queue_free()
+			enemies.erase(e)
+	for f in fruits:
+		if f.index == index:
+			f.queue_free()
+			fruits.erase(f)
+	for f in friends:
+		if f.index == index:
+			f.queue_free()
+			friends.erase(f)
 
 # Retorna a posição do indice ou coordenada desejados
 func _getPositionFromCoords(w: int, h: int) -> Vector3:
-	return Vector3(-h * tileWidth, heightMap[w][h], -w * tileWidth)
+	return Vector3(-h * tileWidth, _getHeightMap(w,h) * tileHeight, -w * tileWidth)
 func getPositionFromIndex(index: int) -> Vector3:
 	var w = fmod(index, mapWidth)
 	var h = index / mapWidth
@@ -185,22 +202,24 @@ func getPositionFromIndex(index: int) -> Vector3:
 func canMoveUp(index: int) -> bool:
 	var w = fmod(index, mapWidth)
 	var h = index / mapWidth + 1
-	return h < mapHeight && tileMap[w][h] > -1 && heightMap[w][h] - getPositionFromIndex(index).y <= 1
+	return h < mapHeight && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
 func canMoveDown(index: int) -> bool:
 	var w = fmod(index, mapWidth)
 	var h = index / mapWidth - 1
-	return h > -1 && tileMap[w][h] > -1 && heightMap[w][h] - getPositionFromIndex(index).y <= 1
+	return h > -1 && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
 func canMoveRight(index: int) -> bool:
 	var w = fmod(index, mapWidth) + 1
 	var h = index / mapWidth
-	return w < mapWidth && tileMap[w][h] > -1 && heightMap[w][h] - getPositionFromIndex(index).y <= 1
+	return w < mapWidth && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
 func canMoveLeft(index: int) -> bool:
 	var w = fmod(index, mapWidth) - 1
 	var h = index / mapWidth
-	return w > -1 && tileMap[w][h] > -1 && heightMap[w][h] - getPositionFromIndex(index).y <= 1
+	return w > -1 && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
 
 # Interações do jogador com os elementos
 func playerTileAction(index: int) -> void:
+	var h = index / mapWidth
+	
 	for e in enemies:
 		if e.index == index:
 			e.queue_free()
@@ -216,9 +235,17 @@ func playerTileAction(index: int) -> void:
 			fruits.erase(f)
 			if life < 3:
 				life += 1
-	
+
 	for f in friends:
 		if f.index == index:
 			f.queue_free()
 			friends.erase(f)
 			score += 1
+			
+	if h > maxPlayerHeight:
+		_createNextTerrainLine()
+		if fmod(h, (MAX_MAP_HEIGHT - 1)/2) == 0:
+			_random_walk(lastW, lastH)
+		if maxPlayerHeight >= MAX_MAP_HEIGHT:
+			_removeFirstTerrainLine()
+		maxPlayerHeight = h

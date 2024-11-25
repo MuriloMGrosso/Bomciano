@@ -1,7 +1,6 @@
-[gd_scene load_steps=21 format=3 uid="uid://cw3q7t8coffv6"]
+[gd_scene load_steps=19 format=3 uid="uid://cw3q7t8coffv6"]
 
 [ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
-[ext_resource type="Texture2D" uid="uid://dajs6ym4guo4" path="res://tilemaps/TestTilemap.png" id="2_vup8l"]
 [ext_resource type="Script" path="res://scripts/CameraMovement.gd" id="3_7qwd1"]
 [ext_resource type="PackedScene" uid="uid://btb31cmejqtte" path="res://scenes/Tile.tscn" id="3_cwfvk"]
 [ext_resource type="Script" path="res://scripts/LeverManager.gd" id="3_qrwog"]
@@ -17,11 +16,6 @@
 [ext_resource type="Texture2D" uid="uid://dnsnj5wwuo1s1" path="res://images/backgrounds/game_background_1/layers/clouds_2.png" id="12_7cvky"]
 [ext_resource type="Texture2D" uid="uid://c238uyfuws3jv" path="res://images/backgrounds/game_background_1/layers/clouds_1.png" id="13_3am7l"]
 [ext_resource type="Texture2D" uid="uid://c6ykopgclbaww" path="res://images/fade.png" id="14_2r7tt"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_jxykh"]
-noise_type = 3
-frequency = 0.0464
-offset = Vector3(409.09, 227.27, 0)
 
 [sub_resource type="Environment" id="Environment_8hhkf"]
 background_mode = 1
@@ -54,18 +48,16 @@ dof_blur_amount = 0.05
 
 [node name="Mars" type="Node3D"]
 script = ExtResource("3_qrwog")
-pelinNoise = SubResource("FastNoiseLite_jxykh")
-mapImage = ExtResource("2_vup8l")
 tileScene = ExtResource("3_cwfvk")
 tileWidth = 1.0
-tileHeight = 0.5
+tileHeight = 0.6
 friend = ExtResource("4_emv6s")
 enemy = ExtResource("4_wc2qw")
 fruit = ExtResource("5_3u88k")
 spawn = ExtResource("7_ukd3o")
 
 [node name="CameraPivot" type="Marker3D" parent="." node_paths=PackedStringArray("player")]
-transform = Transform3D(0.707107, -0.408607, 0.577096, 0, 0.816138, 0.577858, -0.707107, -0.408607, 0.577096, 0, 0, 0)
+transform = Transform3D(0.707107, -0.408607, 0.577096, 0, 0.816138, 0.577858, -0.707107, -0.408607, 0.577096, 0.0665337, -0.132892, 0.0665337)
 script = ExtResource("3_7qwd1")
 player = NodePath("../Player")
 yOffset = 1.0

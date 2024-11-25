@@ -5,6 +5,7 @@
 
 [node name="Friend" type="Node3D"]
 script = ExtResource("2_5s74a")
+timeToMove = 0.5
 
 [node name="O verdadeiro BomCiano" parent="." instance=ExtResource("2_pqqt7")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
