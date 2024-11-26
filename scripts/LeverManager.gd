@@ -95,8 +95,10 @@ func _random_walk(w : int, h : int) -> void:
 		
 	w = clamp(w, 0, mapWidth - 1)
 	h = clamp(h, 0, mapHeight - 1)
-
-	if type < 2:
+	
+	if _getTileMap(w,h) > -1:
+		pass
+	elif type < 2:
 		_setTileMap(w,h,FRIEND_SPAWN)
 	elif type < 5:
 		_setTileMap(w,h,FRUIT_SPAWN)
@@ -172,9 +174,12 @@ func _remove_tile_at(w : int, h : int) -> void:
 	
 	# Remove tile na posição atual
 	var index = w + h * mapWidth
-	#var tile = tiles[str(index)]
-	#tile.queue_free()
-	#tiles.erase(str(index))
+	if not str(index) in tiles.keys():
+		print(index)
+	else:
+		var tile = tiles[str(index)]
+		tile.queue_free()
+		tiles.erase(str(index))
 	
 	# Remove objetos do tile
 	for e in enemies:
