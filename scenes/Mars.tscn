@@ -51,9 +51,9 @@ script = ExtResource("3_qrwog")
 tileScene = ExtResource("3_cwfvk")
 tileWidth = 1.0
 tileHeight = 0.6
-friend = ExtResource("4_emv6s")
 enemy = ExtResource("4_wc2qw")
 fruit = ExtResource("5_3u88k")
+friend = ExtResource("4_emv6s")
 spawn = ExtResource("7_ukd3o")
 
 [node name="CameraPivot" type="Marker3D" parent="." node_paths=PackedStringArray("player")]
