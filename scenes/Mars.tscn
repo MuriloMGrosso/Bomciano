@@ -132,3 +132,7 @@ script = ExtResource("11_fprpl")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8hhkf")
 camera_attributes = SubResource("CameraAttributesPractical_krfgg")
+
+[node name="UI" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0

@@ -256,12 +256,12 @@ func playerTileAction(index: int) -> void:
 	var next_texture
 	match life:
 		0:
-			next_texture = load("res://images/UI/HealthBarempty.png")
+			next_texture = load("res://images/UI/HealthBarEmpty.png")
 		1:
 			next_texture = load("res://images/UI/HealthBar1Heart.png")
 		2:
 			next_texture = load("res://images/UI/HealthBar2Hearts.png")
-		3:
+		_:
 			next_texture = load("res://images/UI/HealthBarFull.png")
 	$UI.texture = next_texture
 			
