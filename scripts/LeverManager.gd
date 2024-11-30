@@ -237,7 +237,6 @@ func playerTileAction(index: int) -> void:
 			e.queue_free()
 			enemies.erase(e)
 			life -= 1
-			#Reinicia a cena se a vida for 0
 			if life < 1:
 				get_tree().reload_current_scene()
 	
@@ -253,6 +252,18 @@ func playerTileAction(index: int) -> void:
 			f.queue_free()
 			friends.erase(f)
 			score += 1
+	
+	var next_texture
+	match life:
+		0:
+			next_texture = load("res://images/UI/HealthBarempty.png")
+		1:
+			next_texture = load("res://images/UI/HealthBar1Heart.png")
+		2:
+			next_texture = load("res://images/UI/HealthBar2Hearts.png")
+		3:
+			next_texture = load("res://images/UI/HealthBarFull.png")
+	$UI.texture = next_texture
 			
 	if h > maxPlayerHeight:
 		_createNextTerrainLine()
