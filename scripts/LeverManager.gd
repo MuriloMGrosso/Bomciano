@@ -26,7 +26,6 @@ const MAX_MAP_HEIGHT = 25
 @export var fruitRate = 5
 @export var friend: PackedScene
 @export var friendRate = 2
-@export var spawn: PackedScene
 
 # Informações do terreno
 var tileMap = []
@@ -91,7 +90,7 @@ func _load_random_tilemap() -> void:
 		_random_walk(i)
 func _random_walk(index : int) -> void:	
 	var dir = rng.randi_range(1, 100)
-	var type = rng.randi_range(1, 100)
+	var type = rng.randi_range(1, enemyRate + fruitRate + friendRate + emptyRate)
 	var w = lastW[index]
 	var h = lastH[index]
 	
@@ -108,11 +107,11 @@ func _random_walk(index : int) -> void:
 	h = clamp(h, 0, mapHeight - 1)
 	
 	if _getTileMap(w,h) == EMPTY_TILE:
-		if type < 2:
+		if type < friendRate:
 			_setTileMap(w,h,FRIEND_SPAWN)
-		elif type < 5:
+		elif type < friendRate + fruitRate:
 			_setTileMap(w,h,FRUIT_SPAWN)
-		elif type < 10:
+		elif type < friendRate + fruitRate + enemyRate:
 			_setTileMap(w,h,ENEMY_SPAWN)
 		else:		
 			_setTileMap(w,h,DEFAULT_TILE)
@@ -157,9 +156,6 @@ func _create_tile_at(w : int, h : int) -> void:
 		PLAYER_SPAWN: # Spawn do player
 			$Player.position = pos
 			$Player.set_index(index)
-			var obj = spawn.instantiate()
-			obj.position = pos
-			add_child(obj)
 		FRIEND_SPAWN: # Spawn do Bomciano
 			var obj = friend.instantiate()
 			obj.position = pos
@@ -228,17 +224,57 @@ func canMoveLeft(index: int) -> bool:
 	var h = index / mapWidth
 	return w > -1 && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
 
+func alienCanMoveUp(index: int) -> bool:
+	var w = fmod(index, mapWidth)
+	var h = index / mapWidth + 1
+	var isSomethingThere = false
+	for e in enemies:
+		if e.index == w + h * mapWidth:
+			isSomethingThere = true
+			break
+	return !isSomethingThere && h < mapHeight && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
+func alienCanMoveDown(index: int) -> bool:
+	var w = fmod(index, mapWidth)
+	var h = index / mapWidth - 1
+	var isSomethingThere = false
+	for e in enemies:
+		if e.index == w + h * mapWidth:
+			isSomethingThere = true
+			break
+	return !isSomethingThere && h > -1 && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
+func alienCanMoveRight(index: int) -> bool:
+	var w = fmod(index, mapWidth) + 1
+	var h = index / mapWidth
+	var isSomethingThere = false
+	for e in enemies:
+		if e.index == w + h * mapWidth:
+			isSomethingThere = true
+			break
+	return !isSomethingThere && w < mapWidth && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
+func alienCanMoveLeft(index: int) -> bool:
+	var w = fmod(index, mapWidth) - 1
+	var h = index / mapWidth
+	var isSomethingThere = false
+	for e in enemies:
+		if e.index == w + h * mapWidth:
+			isSomethingThere = true
+			break
+	return !isSomethingThere && w > -1 && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
+
+
 # Interações do jogador com o tile
 func playerTileAction(index: int) -> void:
 	var h = index / mapWidth
 	
 	for e in enemies:
 		if e.index == index:
-			e.queue_free()
-			enemies.erase(e)
 			life -= 1
 			if life < 1:
 				get_tree().reload_current_scene()
+			e.queue_free()
+			enemies.erase(e)
+			$Audios.get_node("KakaSad").play_audio()
+			$Audios.get_node("Mauciano").play_audio()
 	
 	for f in fruits:
 		if f.index == index:
@@ -246,12 +282,16 @@ func playerTileAction(index: int) -> void:
 			fruits.erase(f)
 			if life < 3:
 				life += 1
+				$Audios.get_node("KakaHappy").play_audio()
+			$Audios.get_node("Fruit").play_audio()
 
 	for f in friends:
 		if f.index == index:
 			f.queue_free()
 			friends.erase(f)
 			score += 1
+			$Audios.get_node("KakaHappy").play_audio()
+			$Audios.get_node("Bomciano").play_audio()
 	
 	var next_texture
 	match life:

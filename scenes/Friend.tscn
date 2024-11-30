@@ -1,11 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://dt5umfpwtev7w"]
+[gd_scene load_steps=4 format=3 uid="uid://dt5umfpwtev7w"]
 
 [ext_resource type="Script" path="res://scripts/Friend.gd" id="2_5s74a"]
-[ext_resource type="PackedScene" uid="uid://c835y3aktmud5" path="res://models/bomciano/O verdadeiro BomCiano.glb" id="2_pqqt7"]
+[ext_resource type="PackedScene" uid="uid://ch8krksm387lr" path="res://models/bomciano/BomCiano de ferro.glb" id="2_282te"]
+[ext_resource type="AudioStream" uid="uid://l47kadc1hk6p" path="res://sfxs/Passos/Passo_1.wav" id="3_x8tkj"]
 
 [node name="Friend" type="Node3D"]
 script = ExtResource("2_5s74a")
 timeToMove = 0.5
 
-[node name="O verdadeiro BomCiano" parent="." instance=ExtResource("2_pqqt7")]
+[node name="BomCiano de ferro" parent="." instance=ExtResource("2_282te")]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="Audio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("3_x8tkj")
+volume_db = -15.0
+pitch_scale = 2.0

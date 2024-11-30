@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cw3q7t8coffv6"]
+[gd_scene load_steps=25 format=3 uid="uid://cw3q7t8coffv6"]
 
 [ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
 [ext_resource type="Script" path="res://scripts/CameraMovement.gd" id="3_7qwd1"]
@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://dt5umfpwtev7w" path="res://scenes/Friend.tscn" id="4_emv6s"]
 [ext_resource type="PackedScene" uid="uid://bcfsubgeesbua" path="res://scenes/Enemy.tscn" id="4_wc2qw"]
 [ext_resource type="PackedScene" uid="uid://cdimjvdj1ku61" path="res://scenes/Fruit.tscn" id="5_3u88k"]
-[ext_resource type="PackedScene" uid="uid://chxj0ghdivs4g" path="res://scenes/Spawn.tscn" id="7_ukd3o"]
 [ext_resource type="Texture2D" uid="uid://dhf8i7kqu4ndj" path="res://images/backgrounds/game_background_1/layers/sky.png" id="9_fpmib"]
 [ext_resource type="Texture2D" uid="uid://ve73dtjckh42" path="res://images/backgrounds/game_background_1/layers/rocks_1.png" id="10_gxwkh"]
 [ext_resource type="AudioStream" uid="uid://ti1xgtl7axnx" path="res://sfxs/Mars.wav" id="10_trtss"]
@@ -16,6 +15,13 @@
 [ext_resource type="Texture2D" uid="uid://dnsnj5wwuo1s1" path="res://images/backgrounds/game_background_1/layers/clouds_2.png" id="12_7cvky"]
 [ext_resource type="Texture2D" uid="uid://c238uyfuws3jv" path="res://images/backgrounds/game_background_1/layers/clouds_1.png" id="13_3am7l"]
 [ext_resource type="Texture2D" uid="uid://c6ykopgclbaww" path="res://images/fade.png" id="14_2r7tt"]
+[ext_resource type="Script" path="res://scripts/audio_player.gd" id="16_61xei"]
+[ext_resource type="AudioStream" uid="uid://c38dml4vaher2" path="res://sfxs/Kaka_Feliz.wav" id="17_ca011"]
+[ext_resource type="AudioStream" uid="uid://byoeu7wb0ghh6" path="res://sfxs/Kaka_Triste.wav" id="18_6kuqr"]
+[ext_resource type="AudioStream" uid="uid://dv05paqkm0ctb" path="res://sfxs/Extra/Fruta_Estilizada.wav" id="19_n8oq5"]
+[ext_resource type="AudioStream" uid="uid://dxf1smx1rap82" path="res://sfxs/Extra/Bomciano_Elaborado.wav" id="20_36uq3"]
+[ext_resource type="AudioStream" uid="uid://x1kt6o41ll23" path="res://sfxs/Extra/Malciano_Ataca_Realista.wav" id="21_pj4s1"]
+[ext_resource type="AudioStream" uid="uid://bpa4vshswi0ei" path="res://sfxs/Extra/Spawn_ReSpawn.wav" id="22_2wkt8"]
 
 [sub_resource type="Environment" id="Environment_8hhkf"]
 background_mode = 1
@@ -50,14 +56,14 @@ dof_blur_amount = 0.05
 script = ExtResource("3_qrwog")
 tileScene = ExtResource("3_cwfvk")
 tileWidth = 1.0
-tileHeight = 0.6
 enemy = ExtResource("4_wc2qw")
+enemyRate = 2
 fruit = ExtResource("5_3u88k")
+fruitRate = 2
 friend = ExtResource("4_emv6s")
-spawn = ExtResource("7_ukd3o")
 
 [node name="CameraPivot" type="Marker3D" parent="." node_paths=PackedStringArray("player")]
-transform = Transform3D(0.707107, -0.408607, 0.577096, 0, 0.816138, 0.577858, -0.707107, -0.408607, 0.577096, 0.0665337, -0.132892, 0.0665337)
+transform = Transform3D(0.173648, -0.492404, 0.852868, 0, 0.866026, 0.5, -0.984808, -0.0868241, 0.150384, 0.0665337, -0.132892, 0.0665337)
 script = ExtResource("3_7qwd1")
 player = NodePath("../Player")
 yOffset = 1.0
@@ -120,7 +126,7 @@ shadow_normal_bias = 10.0
 
 [node name="Player" parent="." instance=ExtResource("1_b6evm")]
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+[node name="Music" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("10_trtss")
 autoplay = true
 
@@ -136,3 +142,31 @@ camera_attributes = SubResource("CameraAttributesPractical_krfgg")
 [node name="UI" type="TextureRect" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="Audios" type="Node3D" parent="."]
+
+[node name="KakaHappy" type="AudioStreamPlayer2D" parent="Audios"]
+stream = ExtResource("17_ca011")
+script = ExtResource("16_61xei")
+
+[node name="KakaSad" type="AudioStreamPlayer2D" parent="Audios"]
+stream = ExtResource("18_6kuqr")
+script = ExtResource("16_61xei")
+
+[node name="Fruit" type="AudioStreamPlayer2D" parent="Audios"]
+stream = ExtResource("19_n8oq5")
+script = ExtResource("16_61xei")
+
+[node name="Bomciano" type="AudioStreamPlayer2D" parent="Audios"]
+stream = ExtResource("20_36uq3")
+script = ExtResource("16_61xei")
+
+[node name="Mauciano" type="AudioStreamPlayer2D" parent="Audios"]
+stream = ExtResource("21_pj4s1")
+volume_db = -5.0
+script = ExtResource("16_61xei")
+
+[node name="Spawn" type="AudioStreamPlayer2D" parent="Audios"]
+stream = ExtResource("22_2wkt8")
+autoplay = true
+script = ExtResource("16_61xei")

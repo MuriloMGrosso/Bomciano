@@ -1,42 +1,59 @@
 extends Node3D
 
 var index = 0
+var timeToMove = 1
 
 # Chamada em cada frame
 func _process(delta: float) -> void:
-	_movement()
+	_movement(delta)
 	get_parent().playerTileAction(index)
 
 # Movimentação do jogador
-func _movement() -> void:
+func _movement(delta : float) -> void:
 	# Tamanho dos tiles
 	var tileWidth = get_parent().tileWidth
 	var tileHeight = get_parent().tileHeight
 	
 	# Se a tecla for pressionada, vira para a ireção desejada e verifica se pode se mover.
 	# Em caso positivo, jogador é movido para a nova posição.
-	if Input.is_action_just_pressed("up"):
+	if Input.is_action_just_pressed("up") || Input.is_action_pressed("up") && timeToMove < 0 :
 		look_at(position + Vector3.RIGHT, Vector3.UP)
 		if(get_parent().canMoveUp(index)):
 			index += get_parent().mapWidth
+			play_walk_sound()
 		
-	if Input.is_action_just_pressed("down"):
+	if Input.is_action_just_pressed("down") || Input.is_action_pressed("down") && timeToMove < 0:
 		look_at(position + Vector3.LEFT, Vector3.UP)
 		if(get_parent().canMoveDown(index)):
 			index -= get_parent().mapWidth
+			play_walk_sound()
 		
-	if Input.is_action_just_pressed("right"):
+	if Input.is_action_just_pressed("right") || Input.is_action_pressed("right") && timeToMove < 0:
 		look_at(position + Vector3.BACK, Vector3.UP)
 		if(get_parent().canMoveRight(index)):
 			index += 1
+			play_walk_sound()
 		
-	if Input.is_action_just_pressed("left"):
+	if Input.is_action_just_pressed("left") || Input.is_action_pressed("left") && timeToMove < 0:
 		look_at(position + Vector3.FORWARD, Vector3.UP)
 		if(get_parent().canMoveLeft(index)):
 			index -= 1
+			play_walk_sound()
+	
+	if  Input.is_action_pressed("up") ||  Input.is_action_pressed("down") ||  Input.is_action_pressed("left") ||  Input.is_action_pressed("right"):
+		if timeToMove < 0:
+			timeToMove = 0.2	
+		else:
+			timeToMove -= delta
+	else:
+		timeToMove = 0.5
 			
 	position = get_parent().getPositionFromIndex(index)
 
 # Define o indice do jogador no mapa
 func set_index(_index: int) -> void:
 	index = _index
+	
+func play_walk_sound():
+	$Audio.stream = load("res://sfxs/Passos/Passo_"+str(randi_range(1,8))+".wav")
+	$Audio.play()

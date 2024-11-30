@@ -1,10 +1,79 @@
-[gd_scene load_steps=3 format=3 uid="uid://cdimjvdj1ku61"]
+[gd_scene load_steps=6 format=3 uid="uid://cdimjvdj1ku61"]
 
 [ext_resource type="PackedScene" uid="uid://38lpc1otlde8" path="res://models/Fruta.glb" id="1_sfs4l"]
 [ext_resource type="Script" path="res://scripts/Fruit.gd" id="2_n8um2"]
+
+[sub_resource type="Animation" id="Animation_xribe"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.5, 0.25, 0.25)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("..:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_navpq"]
+resource_name = "fruit_idle"
+length = 3.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = false
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.53333, 3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(-0.5, 0, 0.25), Vector3(-0.5, 0.15, 0.25), Vector3(-0.5, 0, 0.25)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("..:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mhgaf"]
+_data = {
+"RESET": SubResource("Animation_xribe"),
+"fruit_idle": SubResource("Animation_navpq")
+}
 
 [node name="Fruit" type="Node3D"]
 script = ExtResource("2_n8um2")
 
 [node name="Fruta" parent="." instance=ExtResource("1_sfs4l")]
-transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, -0.5, 0, 0.25)
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, -0.5, 0.25, 0.25)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Fruta")
+libraries = {
+"": SubResource("AnimationLibrary_mhgaf")
+}
+autoplay = "fruit_idle"
