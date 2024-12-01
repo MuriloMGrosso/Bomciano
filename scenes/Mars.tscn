@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://cw3q7t8coffv6"]
+[gd_scene load_steps=24 format=3 uid="uid://cw3q7t8coffv6"]
 
 [ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
 [ext_resource type="Script" path="res://scripts/CameraMovement.gd" id="3_7qwd1"]
@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://ve73dtjckh42" path="res://images/backgrounds/game_background_1/layers/rocks_1.png" id="10_gxwkh"]
 [ext_resource type="AudioStream" uid="uid://ti1xgtl7axnx" path="res://sfxs/Mars.wav" id="10_trtss"]
 [ext_resource type="Texture2D" uid="uid://d86e07c3qkyv" path="res://images/backgrounds/game_background_2/layers/rocks_2.png" id="11_0jquu"]
-[ext_resource type="Script" path="res://scripts/ScoreDisplay.gd" id="11_fprpl"]
 [ext_resource type="Texture2D" uid="uid://dnsnj5wwuo1s1" path="res://images/backgrounds/game_background_1/layers/clouds_2.png" id="12_7cvky"]
 [ext_resource type="Texture2D" uid="uid://c238uyfuws3jv" path="res://images/backgrounds/game_background_1/layers/clouds_1.png" id="13_3am7l"]
 [ext_resource type="Texture2D" uid="uid://c6ykopgclbaww" path="res://images/fade.png" id="14_2r7tt"]
@@ -130,18 +129,9 @@ shadow_normal_bias = 10.0
 stream = ExtResource("10_trtss")
 autoplay = true
 
-[node name="ScoreDisplay" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("11_fprpl")
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8hhkf")
 camera_attributes = SubResource("CameraAttributesPractical_krfgg")
-
-[node name="UI" type="TextureRect" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
 
 [node name="Audios" type="Node3D" parent="."]
 
@@ -170,3 +160,26 @@ script = ExtResource("16_61xei")
 stream = ExtResource("22_2wkt8")
 autoplay = true
 script = ExtResource("16_61xei")
+
+[node name="UI" type="Node3D" parent="."]
+
+[node name="ScoreDisplay" type="HBoxContainer" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="HealthBar" type="HBoxContainer" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0

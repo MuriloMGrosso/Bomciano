@@ -27,6 +27,13 @@ const MAX_MAP_HEIGHT = 25
 @export var friend: PackedScene
 @export var friendRate = 2
 
+# Itens da UI
+var scoreImagesPath = "res://images/UI/numbers/"
+var healthImagesPath = "res://images/UI/healthBar/"
+@onready var scoreDisplay = $UI/ScoreDisplay
+@onready var healthDisplay = $UI/HealthBar
+
+
 # Informações do terreno
 var tileMap = []
 var heightMap = []
@@ -292,18 +299,6 @@ func playerTileAction(index: int) -> void:
 			score += 1
 			$Audios.get_node("KakaHappy").play_audio()
 			$Audios.get_node("Bomciano").play_audio()
-	
-	var next_texture
-	match life:
-		0:
-			next_texture = load("res://images/UI/HealthBarEmpty.png")
-		1:
-			next_texture = load("res://images/UI/HealthBar1Heart.png")
-		2:
-			next_texture = load("res://images/UI/HealthBar2Hearts.png")
-		_:
-			next_texture = load("res://images/UI/HealthBarFull.png")
-	$UI.texture = next_texture
 			
 	if h > maxPlayerHeight:
 		_createNextTerrainLine()
@@ -313,3 +308,22 @@ func playerTileAction(index: int) -> void:
 		if maxPlayerHeight >= MAX_MAP_HEIGHT:
 			_removeFirstTerrainLine()
 		maxPlayerHeight = h
+	
+	updateUI()
+
+func updateUI() -> void:
+	for child in scoreDisplay.get_children():
+		child.queue_free()
+	for i in str(score):
+		var number = TextureRect.new()
+		scoreDisplay.add_child(number)
+		number.custom_minimum_size = Vector2(64,64)
+		number.texture = load(scoreImagesPath + i + '.png')
+
+	for child in healthDisplay.get_children():
+		child.queue_free()
+	for i in life:
+		var life = TextureRect.new()
+		healthDisplay.add_child(life)
+		life.custom_minimum_size = Vector2(64,64)
+		life.texture = load(healthImagesPath + 'fullHeart.png')
