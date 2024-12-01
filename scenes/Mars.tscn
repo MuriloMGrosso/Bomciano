@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://cw3q7t8coffv6"]
+[gd_scene load_steps=26 format=3 uid="uid://cw3q7t8coffv6"]
 
 [ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
 [ext_resource type="Script" path="res://scripts/CameraMovement.gd" id="3_7qwd1"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bcfsubgeesbua" path="res://scenes/Enemy.tscn" id="4_wc2qw"]
 [ext_resource type="PackedScene" uid="uid://cdimjvdj1ku61" path="res://scenes/Fruit.tscn" id="5_3u88k"]
 [ext_resource type="Texture2D" uid="uid://dhf8i7kqu4ndj" path="res://images/backgrounds/game_background_1/layers/sky.png" id="9_fpmib"]
+[ext_resource type="Script" path="res://scripts/clouds.gd" id="10_a4qbl"]
 [ext_resource type="Texture2D" uid="uid://ve73dtjckh42" path="res://images/backgrounds/game_background_1/layers/rocks_1.png" id="10_gxwkh"]
 [ext_resource type="AudioStream" uid="uid://ti1xgtl7axnx" path="res://sfxs/Mars.wav" id="10_trtss"]
 [ext_resource type="Texture2D" uid="uid://d86e07c3qkyv" path="res://images/backgrounds/game_background_2/layers/rocks_2.png" id="11_0jquu"]
@@ -56,6 +57,7 @@ dof_blur_amount = 0.05
 script = ExtResource("3_qrwog")
 tileScene = ExtResource("3_cwfvk")
 tileWidth = 1.0
+tileHeight = 0.2
 enemy = ExtResource("4_wc2qw")
 enemyRate = 2
 fruit = ExtResource("5_3u88k")
@@ -93,15 +95,43 @@ transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, -5.06639e-07, 1, 0, 0, -8)
 modulate = Color(1, 0.435294, 0.117647, 0.623529)
 texture = ExtResource("11_0jquu")
 
-[node name="Layer3" type="Sprite3D" parent="CameraPivot/Background"]
-transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, -1.04308e-06, 1, 0, 0, -7)
+[node name="Clouds1" type="Node3D" parent="CameraPivot/Background"]
+transform = Transform3D(1, 0, 0, -7.45058e-09, 1, 9.31323e-10, -1.49012e-08, -1.67638e-08, 1, 0, 0, -7)
+
+[node name="Layer3_1" type="Sprite3D" parent="CameraPivot/Background/Clouds1"]
+transform = Transform3D(0.999999, 7.45058e-09, 0, 7.45058e-09, 1, -1.86265e-09, 1.49012e-08, -1.05519e-06, 1, 0, 0, 0)
 modulate = Color(1, 0.533333, 0.317647, 1)
 texture = ExtResource("12_7cvky")
+script = ExtResource("10_a4qbl")
+speed = 0.25
+width = 20.0
 
-[node name="Layer4" type="Sprite3D" parent="CameraPivot/Background"]
-transform = Transform3D(0.999997, 0, 0, 0, 0.999999, 0, 0, -2.11596e-06, 1, 0, 0, -6)
+[node name="Layer3_2" type="Sprite3D" parent="CameraPivot/Background/Clouds1"]
+transform = Transform3D(0.999998, 2.23517e-08, 1.49012e-08, 7.45058e-09, 1, -3.25963e-08, 2.98023e-08, -2.12342e-06, 1, -20, 0, 0)
+modulate = Color(1, 0.533333, 0.317647, 1)
+texture = ExtResource("12_7cvky")
+script = ExtResource("10_a4qbl")
+speed = 0.25
+width = 20.0
+
+[node name="Clouds2" type="Node3D" parent="CameraPivot/Background"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
+
+[node name="Layer4_1" type="Sprite3D" parent="CameraPivot/Background/Clouds2"]
+transform = Transform3D(0.999997, 7.45058e-09, 0, 0, 0.999999, 9.31323e-10, 0, -2.13739e-06, 1, 0, 0, 0)
 modulate = Color(1, 0.597054, 0.354859, 1)
 texture = ExtResource("13_3am7l")
+script = ExtResource("10_a4qbl")
+speed = 0.1
+width = 20.0
+
+[node name="Layer4_2" type="Sprite3D" parent="CameraPivot/Background/Clouds2"]
+transform = Transform3D(0.999994, 1.49012e-08, 0, -7.45058e-09, 0.999998, 3.72529e-09, 1.49012e-08, -4.28874e-06, 1, -20, 0, 0)
+modulate = Color(1, 0.597054, 0.354859, 1)
+texture = ExtResource("13_3am7l")
+script = ExtResource("10_a4qbl")
+speed = 0.1
+width = 20.0
 
 [node name="Foreground" type="Node3D" parent="CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 90)
@@ -133,6 +163,7 @@ autoplay = true
 [node name="ScoreDisplay" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
+uppercase = true
 script = ExtResource("11_fprpl")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -140,8 +171,10 @@ environment = SubResource("Environment_8hhkf")
 camera_attributes = SubResource("CameraAttributesPractical_krfgg")
 
 [node name="UI" type="TextureRect" parent="."]
+offset_top = 20.0
 offset_right = 40.0
-offset_bottom = 40.0
+offset_bottom = 60.0
+scale = Vector2(0.5, 0.5)
 
 [node name="Audios" type="Node3D" parent="."]
 
