@@ -10,7 +10,7 @@ const FRUIT_SPAWN = 4
 
 # Largura e altura máxima do mapa
 const MAX_TILE_WIDTH = 15
-const MAX_MAP_HEIGHT = 25
+const MAX_MAP_HEIGHT = 50
 
 # Bloco
 @export var tileScene: PackedScene

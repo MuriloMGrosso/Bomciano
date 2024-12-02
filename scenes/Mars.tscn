@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cw3q7t8coffv6"]
+[gd_scene load_steps=25 format=3 uid="uid://cw3q7t8coffv6"]
 
 [ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
 [ext_resource type="Script" path="res://scripts/CameraMovement.gd" id="3_7qwd1"]
@@ -55,12 +55,12 @@ dof_blur_amount = 0.05
 [node name="Mars" type="Node3D"]
 script = ExtResource("3_qrwog")
 tileScene = ExtResource("3_cwfvk")
-tileWidth = 1.0
-tileHeight = 0.2
+tileWidth = 0.75
+tileHeight = 0.1
 enemy = ExtResource("4_wc2qw")
 enemyRate = 2
 fruit = ExtResource("5_3u88k")
-fruitRate = 2
+fruitRate = 1
 friend = ExtResource("4_emv6s")
 
 [node name="CameraPivot" type="Marker3D" parent="." node_paths=PackedStringArray("player")]
@@ -147,7 +147,7 @@ texture = ExtResource("14_2r7tt")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.656059, 0.75471, 0, -0.75471, 0.656059, 0, 4.28162, 5.04517)
-light_color = Color(0.992157, 1, 0.686275, 1)
+light_color = Color(1, 1, 0.584314, 1)
 light_energy = 1.5
 shadow_enabled = true
 shadow_bias = 0.0
@@ -197,9 +197,10 @@ script = ExtResource("16_61xei")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 40.0
+offset_left = -156.0
+offset_top = 560.0
+offset_right = -116.0
+offset_bottom = 600.0
 grow_horizontal = 2
 
 [node name="HealthBar" type="HBoxContainer" parent="UI"]
@@ -208,8 +209,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -20.0
-offset_top = -40.0
-offset_right = 20.0
+offset_left = 24.0
+offset_top = -73.0
+offset_right = 64.0
+offset_bottom = -33.0
 grow_horizontal = 2
 grow_vertical = 0

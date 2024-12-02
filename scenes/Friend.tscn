@@ -4,6 +4,21 @@
 [ext_resource type="PackedScene" uid="uid://ch8krksm387lr" path="res://models/bomciano/BomCiano de ferro.glb" id="2_282te"]
 [ext_resource type="AudioStream" uid="uid://l47kadc1hk6p" path="res://sfxs/Passos/Passo_1.wav" id="3_x8tkj"]
 
+[sub_resource type="Animation" id="Animation_86sdx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BomCiano de ferro:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.5, 0.5, 0.5)]
+}
+
 [sub_resource type="Animation" id="Animation_fos30"]
 resource_name = "bomciano_idle"
 loop_mode = 1
@@ -20,21 +35,6 @@ tracks/0/keys = {
 "values": [Vector3(0.5, 0.5, 0.5), Vector3(0.6, 0.4, 0.6), Vector3(0.5, 0.5, 0.5)]
 }
 
-[sub_resource type="Animation" id="Animation_86sdx"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BomCiano de ferro:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0.5, 0.5, 0.5)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ao0o1"]
 _data = {
 "RESET": SubResource("Animation_86sdx"),
@@ -46,7 +46,7 @@ script = ExtResource("2_5s74a")
 timeToMove = 0.5
 
 [node name="BomCiano de ferro" parent="." instance=ExtResource("2_282te")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, -0.0151163, 0)
 
 [node name="Audio" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("3_x8tkj")
