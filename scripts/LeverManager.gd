@@ -267,7 +267,8 @@ func alienCanMoveLeft(index: int) -> bool:
 			break
 	return !isSomethingThere && w > -1 && _getTileMap(w,h) > -1 && _getHeightMap(w,h) * tileHeight - getPositionFromIndex(index).y <= 1
 
-
+func playerPosition() -> int:
+	return $Player.my_position()
 # Interações do jogador com o tile
 func playerTileAction(index: int) -> void:
 	var h = index / mapWidth
@@ -309,6 +310,7 @@ func playerTileAction(index: int) -> void:
 		maxPlayerHeight = h
 	
 	updateUI()
+
 
 func updateUI() -> void:
 	for child in scoreDisplay.get_children():

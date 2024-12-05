@@ -53,7 +53,9 @@ func _movement(delta : float) -> void:
 # Define o indice do jogador no mapa
 func set_index(_index: int) -> void:
 	index = _index
-	
+
+func my_position() -> int:
+	return index
 func play_walk_sound():
 	$Audio.stream = load("res://sfxs/Passos/Passo_"+str(randi_range(1,8))+".wav")
 	$Audio.play()
