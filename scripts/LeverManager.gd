@@ -31,7 +31,6 @@ const MAX_MAP_HEIGHT = 50
 var scoreImagesPath = "res://images/UI/numbers/"
 var healthImagesPath = "res://images/UI/healthBar/"
 @onready var scoreDisplay = $UI/ScoreDisplay
-@onready var healthDisplay = $UI/HealthBar
 
 
 # Informações do terreno
@@ -319,11 +318,13 @@ func updateUI() -> void:
 		scoreDisplay.add_child(number)
 		number.custom_minimum_size = Vector2(64,64)
 		number.texture = load(scoreImagesPath + i + '.png')
-
-	for child in healthDisplay.get_children():
-		child.queue_free()
 	for i in life:
 		var life = TextureRect.new()
-		healthDisplay.add_child(life)
+		scoreDisplay.add_child(life)
 		life.custom_minimum_size = Vector2(64,64)
 		life.texture = load(healthImagesPath + 'fullHeart.png')
+	for i in (3 - life):
+		var emptyHeart = TextureRect.new()
+		scoreDisplay.add_child(emptyHeart)
+		emptyHeart.custom_minimum_size = Vector2(64,64)
+		emptyHeart.texture = load(healthImagesPath + 'emptyHeart.png')
