@@ -9,7 +9,7 @@ const ENEMY_SPAWN = 3
 const FRUIT_SPAWN = 4
 
 # Largura e altura máxima do mapa
-const MAX_TILE_WIDTH = 15
+const MAX_TILE_WIDTH = 20
 const MAX_MAP_HEIGHT = 50
 
 # Bloco
@@ -111,6 +111,8 @@ func _random_walk(index : int) -> void:
 		
 	w = clamp(w, 0, mapWidth - 1)
 	h = clamp(h, 0, mapHeight - 1)
+	var w1 = clamp(w + 1, 0, mapWidth - 1)
+	var w2 = clamp(w - 1, 0, mapWidth - 1)
 	
 	if _getTileMap(w,h) == EMPTY_TILE:
 		if type < friendRate:
@@ -123,6 +125,32 @@ func _random_walk(index : int) -> void:
 			_setTileMap(w,h,DEFAULT_TILE)
 		
 		_create_tile_at(w, h)
+
+	type = rng.randi_range(1, enemyRate + fruitRate + friendRate + emptyRate)
+	if _getTileMap(w1,h) == EMPTY_TILE:
+		if type < friendRate:
+			_setTileMap(w1,h,FRIEND_SPAWN)
+		elif type < friendRate + fruitRate:
+			_setTileMap(w1,h,FRUIT_SPAWN)
+		elif type < friendRate + fruitRate + enemyRate:
+			_setTileMap(w1,h,ENEMY_SPAWN)
+		else:		
+			_setTileMap(w1,h,DEFAULT_TILE)
+		
+		_create_tile_at(w1, h)
+		
+	type = rng.randi_range(1, enemyRate + fruitRate + friendRate + emptyRate)
+	if _getTileMap(w2,h) == EMPTY_TILE:
+		if type < friendRate:
+			_setTileMap(w2,h,FRIEND_SPAWN)
+		elif type < friendRate + fruitRate:
+			_setTileMap(w2,h,FRUIT_SPAWN)
+		elif type < friendRate + fruitRate + enemyRate:
+			_setTileMap(w2,h,ENEMY_SPAWN)
+		else:		
+			_setTileMap(w2,h,DEFAULT_TILE)
+		
+		_create_tile_at(w2, h)
 	
 	lastH[index] = h
 	lastW[index] = w
@@ -308,6 +336,9 @@ func playerTileAction(index: int) -> void:
 			_removeFirstTerrainLine()
 		maxPlayerHeight = h
 	
+	if score > 41:
+		get_tree().reload_current_scene()
+	
 	updateUI()
 
 func updateUI() -> void:
@@ -328,3 +359,6 @@ func updateUI() -> void:
 		scoreDisplay.add_child(emptyHeart)
 		emptyHeart.custom_minimum_size = Vector2(64,64)
 		emptyHeart.texture = load(healthImagesPath + 'emptyHeart.png')
+		
+func playerPosition() -> int:
+	return $Player.my_position()

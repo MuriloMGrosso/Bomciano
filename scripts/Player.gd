@@ -56,11 +56,11 @@ func _movement(delta : float) -> void:
 	
 	if  Input.is_action_pressed("up") ||  Input.is_action_pressed("down") ||  Input.is_action_pressed("left") ||  Input.is_action_pressed("right"):
 		if timeToMove < 0:
-			timeToMove = 0.2	
+			timeToMove = 0.15	
 		else:
 			timeToMove -= delta
 	else:
-		timeToMove = 0.5
+		timeToMove = 0.3
 
 # Define o indice do jogador no mapa
 func set_index(_index: int) -> void:
@@ -69,3 +69,6 @@ func set_index(_index: int) -> void:
 func play_walk_sound():
 	$Audio.stream = load("res://sfxs/Passos/Passo_"+str(randi_range(1,8))+".wav")
 	$Audio.play()
+	
+func my_position() -> int:
+	return index
