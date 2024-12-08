@@ -6,10 +6,13 @@ const UP_DIR = 0
 const DOWN_DIR = 1
 const RIGHT_DIR = 2
 const LEFT_DIR = 3
+const SPEED = 1.5
 
 var index = 0
 var currentDir = LEFT_DIR
 var moveTimer : float
+
+var destroy = false
 
 # Primeira chamada
 func _ready() -> void:
@@ -17,14 +20,25 @@ func _ready() -> void:
 
 # Chamada em cada frame
 func _process(delta: float) -> void:
-	if moveTimer < 0:
-		moveTimer = timeToMove
-		_move()
+	if(!destroy):
+		if moveTimer < 0:
+			moveTimer = timeToMove
+			_move(delta)
+		else:
+			moveTimer -= delta
 	else:
-		moveTimer -= delta
+		if scale.x < 0.1:
+			queue_free()
+		else:
+			scale -= Vector3.ONE * delta * 4
+			
+	var targetPos = get_parent().getPositionFromIndex(index)
+	position.x = move_toward(position.x, targetPos.x, SPEED * delta)
+	position.y = move_toward(position.y, targetPos.y, SPEED * delta)
+	position.z = move_toward(position.z, targetPos.z, SPEED * delta)
 
 # Move o amigo
-func _move() -> void:
+func _move(delta : float) -> void:
 	# Tamanho dos tiles
 	var tileWidth = get_parent().tileWidth
 	var tileHeight = get_parent().tileHeight
@@ -64,8 +78,6 @@ func _move() -> void:
 			else:
 				currentDir = rng.randi_range(0, 3)
 				moveTimer = -1
-
-	position = get_parent().getPositionFromIndex(index)
 
 # Define o indice no mapa
 func set_index(_index: int) -> void:

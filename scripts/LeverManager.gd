@@ -278,14 +278,14 @@ func playerTileAction(index: int) -> void:
 			life -= 1
 			if life < 1:
 				get_tree().reload_current_scene()
-			e.queue_free()
+			e.destroy = true
 			enemies.erase(e)
 			$Audios.get_node("KakaSad").play_audio()
 			$Audios.get_node("Mauciano").play_audio()
 	
 	for f in fruits:
 		if f.index == index:
-			f.queue_free()
+			f.destroy = true
 			fruits.erase(f)
 			if life < 3:
 				life += 1
@@ -294,7 +294,7 @@ func playerTileAction(index: int) -> void:
 
 	for f in friends:
 		if f.index == index:
-			f.queue_free()
+			f.destroy = true
 			friends.erase(f)
 			score += 1
 			$Audios.get_node("KakaHappy").play_audio()

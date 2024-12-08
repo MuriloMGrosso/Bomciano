@@ -2,11 +2,25 @@ extends Node3D
 
 var index = 0
 var timeToMove = 1
+const SPEED = 3
 
 # Chamada em cada frame
 func _process(delta: float) -> void:
 	_movement(delta)
 	get_parent().playerTileAction(index)
+	
+	var targetPos = get_parent().getPositionFromIndex(index)
+	var dist = abs((targetPos - position).length())
+	
+	position.x = move_toward(position.x, targetPos.x, SPEED * (1 + dist) * delta)
+	position.y = move_toward(position.y, targetPos.y, SPEED * (1 + dist) * delta)
+	position.z = move_toward(position.z, targetPos.z, SPEED * (1 + dist) * delta)
+	get_node("Pivot/Kaka_animado/AnimationPlayer").speed_scale = (1 + dist)
+	
+	if dist > 0.05:
+		get_node("Pivot/Kaka_animado/AnimationPlayer").play("Andando - 29 frames")
+	else:
+		get_node("Pivot/Kaka_animado/AnimationPlayer").play("Idle - 50 frames")
 
 # Movimentação do jogador
 func _movement(delta : float) -> void:
@@ -47,8 +61,6 @@ func _movement(delta : float) -> void:
 			timeToMove -= delta
 	else:
 		timeToMove = 0.5
-			
-	position = get_parent().getPositionFromIndex(index)
 
 # Define o indice do jogador no mapa
 func set_index(_index: int) -> void:

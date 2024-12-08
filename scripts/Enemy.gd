@@ -6,10 +6,12 @@ const UP_DIR = 0
 const DOWN_DIR = 1
 const RIGHT_DIR = 2
 const LEFT_DIR = 3
+const SPEED = 0.8
 
 var index = 0
 var currentDir = LEFT_DIR
 var moveTimer : float
+var destroy = false
 
 # Primeira chamada
 func _ready() -> void:
@@ -17,11 +19,22 @@ func _ready() -> void:
 
 # Chamada em cada frame
 func _process(delta: float) -> void:
-	if moveTimer < 0:
-		moveTimer = timeToMove
-		_move()
+	if !destroy:
+		if moveTimer < 0:
+			moveTimer = timeToMove
+			_move()
+		else:
+			moveTimer -= delta
 	else:
-		moveTimer -= delta
+		if scale.x < 0.1:
+			queue_free()
+		else:
+			scale -= Vector3.ONE * delta * 4
+		
+	var targetPos = get_parent().getPositionFromIndex(index)
+	position.x = move_toward(position.x, targetPos.x, SPEED * delta)
+	position.y = move_toward(position.y, targetPos.y, SPEED * delta)
+	position.z = move_toward(position.z, targetPos.z, SPEED * delta)
 
 # Move o inimigo
 func _move() -> void:
@@ -64,8 +77,6 @@ func _move() -> void:
 			else:
 				currentDir = rng.randi_range(0, 3)
 				moveTimer = -1
-
-	position = get_parent().getPositionFromIndex(index)
 
 # Define o indice do inimigo no mapa
 func set_index(_index: int) -> void:
