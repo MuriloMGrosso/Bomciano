@@ -58,6 +58,10 @@ var rng
 func _ready() -> void:
 	rng = RandomNumberGenerator.new()
 	_load_random_tilemap()
+	
+func _process(delta: float) -> void:
+	if $Player.dead && Input.is_action_pressed('ui_accept'):
+		get_tree().reload_current_scene()
 
 # Get/Set informações do terreno
 func _getTileMap(w : int, h : int):
@@ -304,7 +308,8 @@ func playerTileAction(index: int) -> void:
 		if e.index == index:
 			life -= 1
 			if life < 1:
-				get_tree().reload_current_scene()
+				get_node('Videos/GameOver').play()
+				$Player.dead = true
 			e.destroy = true
 			enemies.erase(e)
 			$Audios.get_node("KakaSad").play_audio()
@@ -337,7 +342,8 @@ func playerTileAction(index: int) -> void:
 		maxPlayerHeight = h
 	
 	if score > 41:
-		get_tree().reload_current_scene()
+		get_node('Videos/GoodEnding').play()
+		$Player.dead = true
 	
 	updateUI()
 

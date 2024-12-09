@@ -2,10 +2,14 @@ extends Node3D
 
 var index = 0
 var timeToMove = 1
+var dead = false
 const SPEED = 3
 
 # Chamada em cada frame
 func _process(delta: float) -> void:
+	if dead:
+		return
+	
 	_movement(delta)
 	get_parent().playerTileAction(index)
 	

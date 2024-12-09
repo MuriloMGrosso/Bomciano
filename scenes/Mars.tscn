@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://cw3q7t8coffv6"]
+[gd_scene load_steps=27 format=3 uid="uid://cw3q7t8coffv6"]
 
 [ext_resource type="PackedScene" uid="uid://b33bhrgedy24a" path="res://scenes/Player.tscn" id="1_b6evm"]
 [ext_resource type="Script" path="res://scripts/CameraMovement.gd" id="3_7qwd1"]
@@ -22,6 +22,8 @@
 [ext_resource type="AudioStream" uid="uid://dxf1smx1rap82" path="res://sfxs/Extra/Bomciano_Elaborado.wav" id="20_36uq3"]
 [ext_resource type="AudioStream" uid="uid://x1kt6o41ll23" path="res://sfxs/Extra/Malciano_Ataca_Realista.wav" id="21_pj4s1"]
 [ext_resource type="AudioStream" uid="uid://bpa4vshswi0ei" path="res://sfxs/Extra/Spawn_ReSpawn.wav" id="22_2wkt8"]
+[ext_resource type="VideoStream" path="res://videos/Game-over.ogv" id="23_yqkbr"]
+[ext_resource type="VideoStream" path="res://videos/Good-ending.ogv" id="24_xljoj"]
 
 [sub_resource type="Environment" id="Environment_8hhkf"]
 background_mode = 1
@@ -202,3 +204,21 @@ offset_top = 574.0
 offset_right = 48.0
 offset_bottom = 614.0
 grow_horizontal = 2
+
+[node name="Videos" type="Node3D" parent="."]
+
+[node name="GameOver" type="VideoStreamPlayer" parent="Videos"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+stream = ExtResource("23_yqkbr")
+expand = true
+loop = true
+
+[node name="GoodEnding" type="VideoStreamPlayer" parent="Videos"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+stream = ExtResource("24_xljoj")
+expand = true
+loop = true
